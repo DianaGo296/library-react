@@ -4,6 +4,8 @@ import db from '../../firebase/firebase'
 import './Form.scss';
 
 export const Form = ({ bookId, bookTitle }) => {
+
+
     const [name, setName] = useState('');
     const [validation, setValidation] = useState(false);
     const [hide, setHide] = useState(true);
@@ -28,7 +30,7 @@ export const Form = ({ bookId, bookTitle }) => {
 
                 console.log('Yay, you Just rented ' + bookTitle);
 
-            }).catch((err) => console.log('Something Went Wrong' + err.message));
+            }).catch((err) => console.log('Something Went Wrong ' + err.message));
 
             setName('');
             setValidation(false);
@@ -49,7 +51,4 @@ export const Form = ({ bookId, bookTitle }) => {
         </>
     )
 }
-
-
-// add Loader
 

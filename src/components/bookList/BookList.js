@@ -1,37 +1,49 @@
-import { collection, getDocs } from 'firebase/firestore'
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { BookItem } from '../bookItem/BookItem'
-import db from '../../firebase/firebase'
-import { selectBooks } from './BookListSlice'
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchBooks } from '../../redux/bookSlice';
+import { BookItem } from '../bookItem/BookItem';
 
 
 export const BookList = () => {
-  const books = useSelector(selectBooks)
-  // const [books, setBooks] = useState([]);
-  const bookCollection = collection(db, 'books');
+  const book = useSelector(state => state.book);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getDocs(bookCollection)
-      .then((snapshot) => {
-        // dispatch(setBooks(snapshot))
-        return setBooks(snapshot.docs.map((doc) => {
-          const data = doc.data();
-          const id = doc.id;
-          return { id, ...data }
-        }));
-      })
-      .catch(err => console.log(err.message))
+    dispatch(fetchBooks());
+  }, [dispatch])
 
-      
-  }, [bookCollection]);
+
 
   return (
-    books.map((book) => (
-      <BookItem key={book.id} {...book} />
-    ))
+    <>
+      {book.loading && <div>Loading....</div>}
+      {!book.loading && book.error ? <div>Error: {book.error}</div> : null}
+
+      {!book.loading && book.books.length ? (
+        book.books.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))
+      ) : null}
+    </>
   )
-} 
+}
 
 
-// Run npx create-react-app my-app --template redux 
+
+
+
+  // const books = useSelector(selectBooks);
+  // const [books, setBooks] = useState([]);
+  // const bookCollection = collection(db, 'books');
+
+  // useEffect(() => {
+  //   getDocs(bookCollection)
+  //     .then((snapshot) => {
+  //       return setBooks(snapshot.docs.map((doc) => {
+  //         const data = doc.data();
+  //         const id = doc.id;
+  //         return { id, ...data }
+  //       }));
+  //     })
+  //     .catch(err => console.log(err.message))      
+  // }, [bookCollection]);

@@ -2,12 +2,12 @@ import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA_KaMAGNnVZoPORMEc5nClYYcYPEQ_oXg",
-  authDomain: "library-49b85.firebaseapp.com",
-  projectId: "library-49b85",
-  storageBucket: "library-49b85.appspot.com",
-  messagingSenderId: "695093973706",
-  appId: "1:695093973706:web:235ba8f56614b79c21da33"
+  apiKey: "AIzaSyDizpbGjv90H-QXzeg48x8UMIQOG1xwoAU",
+  authDomain: "library-fea2d.firebaseapp.com",
+  projectId: "library-fea2d",
+  storageBucket: "library-fea2d.appspot.com",
+  messagingSenderId: "787347675644",
+  appId: "1:787347675644:web:f5133953a2688568457a79"
 };
 
 
