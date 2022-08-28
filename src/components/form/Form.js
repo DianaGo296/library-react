@@ -1,36 +1,48 @@
 import { useState } from 'react';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore'
-import db from '../../firebase/firebase'
+import { updateDoc, doc } from 'firebase/firestore';
+import db from '../../firebase/firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateBooks, selectBooks } from '../../redux/bookSlice';
 import './Form.scss';
 
-export const Form = ({ bookId, bookTitle }) => {
+export const Form = ({ bookId }) => {
 
-
+    const dispatch = useDispatch();
+    
     const [name, setName] = useState('');
     const [validation, setValidation] = useState(false);
     const [hide, setHide] = useState(true);
 
-    const rentedBooksCollection = collection(db, 'rented_books');
-    const getDocId = doc(db, 'books', bookId)
 
+    const getDocId = doc(db, 'books', bookId)
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (name.length > 0) {
-            addDoc(rentedBooksCollection, {
-                userName: name,
-                date: new Date(),
-                rentedBookId: bookId,
-                bookName: bookTitle
-            }).then(() => {
+            // addDoc(rentedBooksCollection, {
+            //     userName: name,
+            //     date: new Date(),
+            //     rentedBookId: bookId,
+            //     bookName: bookTitle
+            // }).then(() => {
+            //     updateDoc(getDocId, {
+            //         availble: false
+            //     });
+
+            //     console.log('you Just rented ' + bookTitle);
+
+            // }).catch((err) => console.log('Something Went Wrong ' + err.message));
+        
+            dispatch(updateBooks(
                 updateDoc(getDocId, {
+                    userName: name,
+                    date: new Date(),
                     availble: false
-                });
+                }, { merge: true })
+            ))
 
-                console.log('Yay, you Just rented ' + bookTitle);
 
-            }).catch((err) => console.log('Something Went Wrong ' + err.message));
 
             setName('');
             setValidation(false);

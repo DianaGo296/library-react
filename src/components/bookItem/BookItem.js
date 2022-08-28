@@ -31,7 +31,7 @@ export const BookItem = (props) => {
             <h3>{title}</h3>
             <p>{author}</p>
             <button onClick={handleClick} type='button' className='open-from' disabled={disableBtn}>{btnTxt}</button>
-            {showForm && <Form bookId={id} bookTitle={title} />}
+            {showForm && <Form bookId={id} />}
         </div>
     )
 }

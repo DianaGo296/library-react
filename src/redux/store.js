@@ -4,19 +4,10 @@ import BooksReducer from './bookSlice';
 
 export const store = configureStore({ 
     reducer: {
-        book: BooksReducer
-    }
+        book: BooksReducer,        
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
  });
-
-
-
-
-
-
-
-
-
-
 
 
 
