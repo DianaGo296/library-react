@@ -1,45 +1,54 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { books, selectBooks } from '../../redux/bookSlice';
-import { collection, getDocs } from 'firebase/firestore';
-import db from '../../firebase/firebase';
+import { fetchBooks } from '../../redux/bookSlice';
 import { BookItem } from '../bookItem/BookItem';
 
 
 export const BookList = () => {
 
-  const book = useSelector(selectBooks);
+  const book = useSelector((state) => state.book);
+  // const [showBooks, setShowbook] = useState();
   const dispatch = useDispatch();
-  const bookCollection = collection(db, 'books');
 
   useEffect(() => {
-    getDocs(bookCollection)
-      .then((snapshot) => {
-        dispatch(books(snapshot.docs.map((doc) => {
-          const data = doc.data();
-          const id = doc.id;
-          return { id, ...data }
-        })
-        ))
-      })
-  }, []);
+    return () => {
+      dispatch(fetchBooks());
+
+      // console.log(book.books.map(x => x.id));
+    }
+  }, [dispatch]);
+
+
+
+
 
 
   return (
     <>
-      {book.loading && <div className='loader-container'><div className="loader"></div></div>}
       {!book.loading && book.books.map((book) => (
-          <BookItem key={book.id} {...book} />
-        ))
+        <BookItem key={book.id} {...book} />
+      ))
       }
     </>
   )
 }
 
 /*
- book.map((book) => (
-      <BookItem key={book.id} {...book} />
-    ))
+  
+
+
+  {book.loading && <div className='loader-container'><div className="loader"></div></div>}
+      
+
+
+
+      {book.books.map((book) => (
+        <BookItem key={book.id} {...book} />
+      ))}
+
+
+       
+     
 */
 
 /* {book.loading && <div>Loading....</div>}

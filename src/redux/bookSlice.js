@@ -1,4 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { collection, getDocs } from 'firebase/firestore';
+import db from '../firebase/firebase';
+
+const bookCollection = collection(db, 'books');
+
+export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
+    const snapshot = await getDocs(bookCollection);
+    return snapshot.docs.map((doc) => {
+        const data = doc.data();
+        const id = doc.id;
+        return { id, ...data };
+    });
+});
 
 const initialState = {
     loading: true,
@@ -6,25 +19,32 @@ const initialState = {
 }
 
 export const bookSlice = createSlice({
-    name: 'book',
+    name: 'books',
     initialState,
 
     reducers: {
-        books: (state, action) => {
-            state.loading = false
-            state.books = action.payload
-        },
-
         updateBooks: (state, action) => {
             state.books = action.payload
         }
+    },
+
+    extraReducers: (builder) => {
+        builder.addCase(fetchBooks.pending, (state) => {
+            state.loading = true
+        });
+
+        builder.addCase(fetchBooks.fulfilled, (state, action) => {
+            state.loading = false
+            state.books = action.payload
+        });
+
+        builder.addCase(fetchBooks.rejected, (state) => {
+            state.loading = false
+            state.books = []
+        });
     }
 });
 
-
-export const { books, updateBooks } = bookSlice.actions;
-
-// selectors
-export const selectBooks = (state) => state.book;
-
 export default bookSlice.reducer;
+export const { updateBooks } = bookSlice.actions
+

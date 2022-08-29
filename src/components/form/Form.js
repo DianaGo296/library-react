@@ -1,18 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { updateDoc, doc } from 'firebase/firestore';
 import db from '../../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateBooks, selectBooks } from '../../redux/bookSlice';
+import { updateBooks, fetchBooks } from '../../redux/bookSlice';
 import './Form.scss';
 
 export const Form = ({ bookId }) => {
 
+    const book = useSelector((state) => state.book);
     const dispatch = useDispatch();
     
     const [name, setName] = useState('');
     const [validation, setValidation] = useState(false);
     const [hide, setHide] = useState(true);
 
+    // useEffect(() => {
+    //     return () => {
+    //       dispatch(fetchBooks());
+    //     }
+    //   }, [dispatch]);
+    
+    // const getBookId = book.book.map(getId => getId.id)
 
     const getDocId = doc(db, 'books', bookId)
 
@@ -20,24 +28,10 @@ export const Form = ({ bookId }) => {
         e.preventDefault();
 
         if (name.length > 0) {
-            // addDoc(rentedBooksCollection, {
-            //     userName: name,
-            //     date: new Date(),
-            //     rentedBookId: bookId,
-            //     bookName: bookTitle
-            // }).then(() => {
-            //     updateDoc(getDocId, {
-            //         availble: false
-            //     });
-
-            //     console.log('you Just rented ' + bookTitle);
-
-            // }).catch((err) => console.log('Something Went Wrong ' + err.message));
         
             dispatch(updateBooks(
                 updateDoc(getDocId, {
                     userName: name,
-                    date: new Date(),
                     availble: false
                 }, { merge: true })
             ))

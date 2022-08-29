@@ -6,7 +6,8 @@ export const store = configureStore({
     reducer: {
         book: BooksReducer,        
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+
+    // middleware: (getDefaultMiddleware) => getDefaultMiddleware()
  });
 
 
