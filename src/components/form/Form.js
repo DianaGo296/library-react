@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { updateDoc, doc } from 'firebase/firestore';
+import { updateDoc, doc, getDocs, collection } from 'firebase/firestore';
 import db from '../../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateBooks, fetchBooks } from '../../redux/bookSlice';
@@ -9,42 +9,57 @@ export const Form = ({ bookId }) => {
 
     const book = useSelector((state) => state.book);
     const dispatch = useDispatch();
-    
+
     const [name, setName] = useState('');
     const [validation, setValidation] = useState(false);
     const [hide, setHide] = useState(true);
 
-    // useEffect(() => {
-    //     return () => {
-    //       dispatch(fetchBooks());
-    //     }
-    //   }, [dispatch]);
-    
-    // const getBookId = book.book.map(getId => getId.id)
+    // const bookCollection = collection(db, 'books');
 
-    const getDocId = doc(db, 'books', bookId)
+    // const getBookId = book.books.map(book => book.id);
+    // console.log(getBookId);
 
-    const handleSubmit = (e) => {
+    const getDocId = doc(db, 'books', bookId);
+    console.log(getDocId);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (name.length > 0) {
-        
-            dispatch(updateBooks(
-                updateDoc(getDocId, {
-                    userName: name,
-                    availble: false
-                }, { merge: true })
-            ))
+        const bookUpdate = await updateDoc(getDocId,{
+            userName: name,
+            availble: false
+
+        }).then(() => {
+            console.log("update seccess");
+        });
+
+        dispatch(updateBooks(bookUpdate))
+
+        // const newArray = [{ userName: name}, {availble: false}]
+
+        // const books = await updateDoc(getDocId, {
+        //     userName: name,
+        //     availble: false
+        // }, { merge: true })
+
+    
+        // console.log(books)
+
+        // if (name.length > 0) {
 
 
 
-            setName('');
-            setValidation(false);
-            setHide(false)
+        // if (books && books.length) {   }
+        // dispatch(updateBooks(books))
+        // setName('');
+        // setValidation(false);
+        // setHide(false)
 
-        } else {
-            setValidation(true);
-        }
+
+        // } else {
+        //     setValidation(true);
+        // }
+
     }
 
     return (

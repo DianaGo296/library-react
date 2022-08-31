@@ -5,12 +5,17 @@ import db from '../firebase/firebase';
 const bookCollection = collection(db, 'books');
 
 export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
-    const snapshot = await getDocs(bookCollection);
-    return snapshot.docs.map((doc) => {
-        const data = doc.data();
-        const id = doc.id;
-        return { id, ...data };
-    });
+    try {
+        const snapshot = await getDocs(bookCollection);
+        return snapshot.docs.map((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+            return { id, ...data };
+        });
+    }
+    catch (e) {
+        console.log(e)
+    }
 });
 
 const initialState = {
