@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import db from '../firebase/firebase';
 
 const bookCollection = collection(db, 'books');
@@ -18,38 +18,67 @@ export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
     }
 });
 
+
+
+export const updateBooks = createAsyncThunk('books/updateBooks', async (data) => {
+    // console.log(data)
+
+    const bookRef = doc(db, "books", data.id);
+    try {
+        return await updateDoc(bookRef, {
+            availble: data.availble,
+            userName: data.userName
+        }, { merge: true })
+    }
+    catch (e) {
+        console.log(e)
+    }
+});
+
+
 const initialState = {
-    loading: true,
-    books: []
+    //  'idle' | 'loading' | 'succeeded' | 'failed',
+    status: 'idle',
+    books: [],
+    error: null
 }
 
 export const bookSlice = createSlice({
     name: 'books',
     initialState,
 
-    reducers: {
-        updateBooks: (state, action) => {
-            state.books = action.payload
-        }
-    },
-
     extraReducers: (builder) => {
         builder.addCase(fetchBooks.pending, (state) => {
-            state.loading = true
+            state.status = 'loading'
         });
 
         builder.addCase(fetchBooks.fulfilled, (state, action) => {
-            state.loading = false
+            state.status = 'succeeded'
             state.books = action.payload
         });
 
-        builder.addCase(fetchBooks.rejected, (state) => {
-            state.loading = false
-            state.books = []
+        builder.addCase(fetchBooks.rejected, (state, action) => {
+            state.status = 'failed'
+            state.error = action.error.message
+        });
+
+
+
+        builder.addCase(updateBooks.pending, (state) => {
+            state.status = 'loading'
+        });
+
+        builder.addCase(updateBooks.fulfilled, (state, action) => {
+           console.log(state.books = action.payload)
+        });
+
+        builder.addCase(updateBooks.rejected, (state, action) => {
+            state.status = 'failed'
+            state.error = action.error.message
         });
     }
 });
 
 export default bookSlice.reducer;
-export const { updateBooks } = bookSlice.actions
+export const { updateBook } = bookSlice.actions
 
