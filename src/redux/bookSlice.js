@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
 import db from '../firebase/firebase';
 
 const bookCollection = collection(db, 'books');
@@ -17,6 +17,10 @@ export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
     catch (e) {
         console.log(e)
     }
+}
+
+export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
+    getAllBooks();
 });
 
 
@@ -83,7 +87,6 @@ export const bookSlice = createSlice({
         });
 
         builder.addCase(updateBooks.rejected, (state, action) => {
-            state.status = 'failed'
             state.error = action.error.message
         });
     }
