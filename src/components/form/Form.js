@@ -5,6 +5,7 @@ import './Form.scss';
 
 export const Form = ({ bookId }) => {
 
+    const status = useSelector((state) => state.book.status);
     const [name, setName] = useState('');
     const [validation, setValidation] = useState(false);
     const [hide, setHide] = useState(true);
@@ -14,6 +15,7 @@ export const Form = ({ bookId }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        // if name was typed
         if (name.length > 0) {
             setValidation(false);
             setName('');
@@ -29,7 +31,12 @@ export const Form = ({ bookId }) => {
         }
 
         // check if books was updated currectly then hide form
-        // setHide(false);
+
+        if(status === 'succeeded'){
+            setHide(false);
+        }
+
+        
 
     }
 

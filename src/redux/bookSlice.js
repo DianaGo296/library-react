@@ -4,6 +4,7 @@ import db from '../firebase/firebase';
 
 const bookCollection = collection(db, 'books');
 
+
 export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
     try {
         const snapshot = await getDocs(bookCollection);
@@ -25,10 +26,17 @@ export const updateBooks = createAsyncThunk('books/updateBooks', async (data) =>
 
     const bookRef = doc(db, "books", data.id);
     try {
-        return await updateDoc(bookRef, {
+        await updateDoc(bookRef, {
             availble: data.availble,
             userName: data.userName
         }, { merge: true })
+
+        const snapshot = await getDocs(bookCollection);
+        return snapshot.docs.map((doc) => {
+            const data = doc.data();
+            const id = doc.id;
+            return { id, ...data };
+        });
     }
     catch (e) {
         console.log(e)
@@ -48,6 +56,7 @@ export const bookSlice = createSlice({
     initialState,
 
     extraReducers: (builder) => {
+        // get books
         builder.addCase(fetchBooks.pending, (state) => {
             state.status = 'loading'
         });
@@ -63,13 +72,14 @@ export const bookSlice = createSlice({
         });
 
 
-
+        // update books
         builder.addCase(updateBooks.pending, (state) => {
             state.status = 'loading'
         });
 
         builder.addCase(updateBooks.fulfilled, (state, action) => {
-           console.log(state.books = action.payload)
+            state.status = 'succeeded'
+            state.books = action.payload
         });
 
         builder.addCase(updateBooks.rejected, (state, action) => {
