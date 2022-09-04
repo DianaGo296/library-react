@@ -31,13 +31,9 @@ export const Form = ({ bookId }) => {
         }
 
         // check if books was updated currectly then hide form
-
         if(status === 'succeeded'){
             setHide(false);
-        }
-
-        
-
+        }        
     }
 
 
