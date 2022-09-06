@@ -2,46 +2,55 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import db from '../firebase/firebase';
 
-const bookCollection = collection(db, 'books');
 
 
-export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
+const getAllBooks = async () => {
     try {
+        const bookCollection = collection(db, 'books');
         const snapshot = await getDocs(bookCollection);
-        return snapshot.docs.map((doc) => {
+        const result = await snapshot.docs.map((doc) => {
             const data = doc.data();
             const id = doc.id;
             return { id, ...data };
         });
+        return result;
+    } catch (e) {
+        throw e;
+    }
+
+}
+
+export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
+    try {
+        const result = await getAllBooks();
+        return result;
     }
     catch (e) {
         console.log(e)
     }
-});
 
+});
 
 
 export const updateBooks = createAsyncThunk('books/updateBooks', async (data) => {
     // console.log(data)
-
     const bookRef = doc(db, "books", data.id);
     try {
         await updateDoc(bookRef, {
             availble: data.availble,
             userName: data.userName
         }, { merge: true })
-
-        const snapshot = await getDocs(bookCollection);
-        return snapshot.docs.map((doc) => {
-            const data = doc.data();
-            const id = doc.id;
-            return { id, ...data };
-        });
+        const result = await getAllBooks();
+        return result;
     }
     catch (e) {
         console.log(e)
     }
+
 });
+
+
+
 
 
 const initialState = {

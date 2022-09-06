@@ -1,18 +1,16 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateBooks } from '../../redux/bookSlice';
+import { useUpdateBookMutation } from '../../redux/booksApi';
 import './Form.scss';
 
 export const Form = ({ bookId }) => {
 
-    const status = useSelector((state) => state.book.status);
     const [name, setName] = useState('');
     const [validation, setValidation] = useState(false);
     const [hide, setHide] = useState(true);
 
-    const dispatch = useDispatch();
+    const [updateBook] = useUpdateBookMutation();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // if name was typed
@@ -20,31 +18,28 @@ export const Form = ({ bookId }) => {
             setValidation(false);
             setName('');
 
-            dispatch(updateBooks({
+            await updateBook({
                 id: bookId,
                 userName: name,
                 availble: false
-            }));
+            });
 
         } else {
             setValidation(true)
         }
 
-        // check if books was updated currectly then hide form
-        if(status === 'succeeded'){
-            setHide(false);
-        }        
+        setHide(false);
     }
 
 
     return (
         <>
-            {hide &&
-                <form onSubmit={handleSubmit}>
-                    <input placeholder="Enter Your Name" value={name} onChange={(e) => setName(e.target.value)} />
-                    <button type='submit'>Submit</button>
-                    {validation && <p className='validation'>Please Enter Your Name...</p>}
-                </form>}
+        {hide &&
+            <form onSubmit={handleSubmit}>
+                <input placeholder="Enter Your Name" value={name} onChange={(e) => setName(e.target.value)} />
+                <button type='submit'>Submit</button>
+                {validation && <p className='validation'>Please Enter Your Name...</p>}
+            </form>}
         </>
     )
 }

@@ -1,8 +1,10 @@
 import './bookItem.scss';
 import { Form } from '../form/Form';
 import { useState, useEffect } from 'react';
-export const BookItem = ({ book }) => {
 
+
+
+export const BookItem = ({ book }) => {
     const [showForm, setShowform] = useState(false);
     const [disableBtn, setDisableBtn] = useState(false);
     const [btnTxt, setBtntxt] = useState('Rent This Book');

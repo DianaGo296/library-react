@@ -1,5 +1,5 @@
 import './books.scss'
-import { BookList } from '../../components/bookList/BookList'
+import { BookList } from '../../components/bookList/BookList.js'
 
 export const Books = () => {
     return (
